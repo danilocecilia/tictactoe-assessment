@@ -17,3 +17,9 @@ This is a project for doing a tic tac toe game using ReactJS, this is part of th
 Test requirements: 
  
 1. Successful implementation of a single player tic tac toe game against computer <p>2. Ability to undo or redo the last action taken</p> <p>3. Ability to restart a game or play multiple times and hold score for each game played.</p> 
+
+
+## References:
+
+##### <https://reactjs.org/docs/create-a-new-react-app.html>
+##### <https://scotch.io/tutorials/getting-started-with-css-grid-layout>
