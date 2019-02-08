@@ -1,27 +1,56 @@
 import React, { Component } from "react";
 import "./GameBoard.css";
+import Minimax, { Winning, EmptyIndexes } from "./minimax";
 import Box from "./box/Box";
 
 export default class GameBoard extends Component {
   state = {
-    restart: false
+    // Building an array of nine possible positions
+    square: Array.from(Array(9).keys()),
+    isAITurn: false,
+    player: {
+      ai: "X",
+      human: "O"
+    }
   };
 
   handleRestartGame = () => {
-    return this.setState({ restart: true });
+    return this.setState({
+      square: Array.from(Array(9).keys()),
+      isAITurn: false
+    });
+  };
+
+  handleClick = index => {
+    const {
+      square,
+      isAITurn,
+      player: { ai, human }
+    } = this.state;
+
+    const newSquare = [...square];
+    newSquare[index] = isAITurn ? ai : human;
+
+    // AI Turn
+    var computed = Minimax(newSquare, !isAITurn ? ai : human);
+
+    newSquare[computed.index] = !isAITurn ? ai : human;
+
+    // This will trigger the renderBoxes to be re-rendered with the new values on the square.
+    this.setState({
+      square: newSquare,
+      isAITurn: isAITurn,
+      value: isAITurn ? ai : human
+    });
   };
 
   renderBoxes = () => {
-    // Building an array of nine possible positions
-    const array = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-
-    return array.map((value, index) => {
+    return this.state.square.map((value, index) => {
       return (
         <Box
           key={index}
-          id={value}
-          restartGame={this.state.restart}
-          text={"O"}
+          value={value}
+          onClick={() => this.handleClick(index)}
         />
       );
     });
