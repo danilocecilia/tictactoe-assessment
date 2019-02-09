@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import "./GameBoard.css";
-import Minimax, { Winning, EmptyIndexes } from "./minimax";
+import Minimax, { Winning } from "./minimax";
 import Box from "./box/Box";
+import UndoRedo from "../../containers/UndoRedo";
+import { play, loadBoard, clearBoard, score } from "../../actions";
+import { connect } from "react-redux";
 
-export default class GameBoard extends Component {
+class GameBoard extends Component {
   state = {
     // Building an array of nine possible positions
-    square: Array.from(Array(9).keys()),
     isAITurn: false,
     player: {
       ai: "X",
@@ -15,37 +17,55 @@ export default class GameBoard extends Component {
   };
 
   handleRestartGame = () => {
-    return this.setState({
-      square: Array.from(Array(9).keys()),
-      isAITurn: false
-    });
+    this.props.dispatch(clearBoard(Array.from(Array(9).keys())));
   };
 
   handleClick = index => {
-    const {
-      square,
-      isAITurn,
-      player: { ai, human }
-    } = this.state;
+    this.props.dispatch(play(index, this.state.player.human));
+    this.setState({ isAITurn: true });
+  };
 
-    const newSquare = [...square];
-    newSquare[index] = isAITurn ? ai : human;
+  handleAITurn = () => {
+    const { board } = this.props;
 
     // AI Turn
-    var computed = Minimax(newSquare, !isAITurn ? ai : human);
+    var computed = Minimax(board[board.length - 1], this.state.player.ai);
 
-    newSquare[computed.index] = !isAITurn ? ai : human;
+    this.props.dispatch(play(computed.index, this.state.player.ai));
 
-    // This will trigger the renderBoxes to be re-rendered with the new values on the square.
-    this.setState({
-      square: newSquare,
-      isAITurn: isAITurn,
-      value: isAITurn ? ai : human
-    });
+    this.setState({ isAITurn: false });
+  };
+
+  componentDidMount() {
+    this.props.dispatch(loadBoard(Array.from(Array(9).keys())));
+  }
+
+  checkWinLose = () => {
+    const { board } = this.props;
+    const { player } = this.state;
+    const index = board.length - 1;
+
+    if (Winning(board[index], player.ai)) {
+      alert("you lose");
+    } else if (Winning(board[index], player.human)) {
+      alert("you win");
+    } else if (board.length > 8) {
+      alert("tie");
+    }
   };
 
   renderBoxes = () => {
-    return this.state.square.map((value, index) => {
+    const { board } = this.props;
+    const { isAITurn } = this.state;
+    const index = board.length - 1;
+
+    if (isAITurn) this.handleAITurn();
+
+    if (board.length === 0) return null;
+
+    this.checkWinLose();
+
+    return board[index].map((value, index) => {
       return (
         <Box
           key={index}
@@ -56,18 +76,28 @@ export default class GameBoard extends Component {
     });
   };
 
+  renderScore = () => (
+    <ul>
+      <li>{this.props.score ? this.props.score : "0"}</li>
+    </ul>
+  );
+
   render() {
     return (
       <div>
         <div className="align-center">
-          <button className="back">Undo</button>
-          <button className="site" onClick={() => this.handleRestartGame()}>
-            Restart Game
-          </button>
-          <button className="button">Redo</button>
+          <UndoRedo onRestart={() => this.handleRestartGame()} />
         </div>
         <div className="game-board">{this.renderBoxes()}</div>
       </div>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  past: state.board.past,
+  board: state.board.present,
+  score: state.score
+});
+
+export default connect(mapStateToProps)(GameBoard);

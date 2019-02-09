@@ -21,7 +21,7 @@ export const Winning = (board, player) => {
 };
 
 export const EmptyIndexes = board => {
-  return board.filter(s => s != "O" && s != "X");
+  return board.filter(s => s !== "O" && s !== "X");
 };
 
 const Minimax = (newBoard, player) => {

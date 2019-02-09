@@ -87,3 +87,17 @@ button.site {
 button.site:after {
   display: none;
 }
+
+.score {
+  display: flex;
+  padding: 5px;
+}
+
+.human {
+  margin-right: 54px;
+  margin-left: 20px;
+}
+
+ul {
+  list-style-type: none;
+}
