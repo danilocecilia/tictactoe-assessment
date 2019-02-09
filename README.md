@@ -27,3 +27,5 @@ Test requirements:
 ##### <https://scotch.io/tutorials/getting-started-with-css-grid-layout>
 
 ##### <https://1stwebdesigner.com/free-code-snippets-css-buttons>
+
+##### <https://medium.freecodecamp.org/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37>
