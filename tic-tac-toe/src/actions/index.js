@@ -18,3 +18,8 @@ export const score = score => ({
   type: "ADD_SCORE",
   score
 });
+
+export const endGame = winner => ({
+  type: "END_GAME",
+  winner
+});
