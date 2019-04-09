@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "../gameboard/GameBoard";
 import "./App.css";
 import GameBoard from "../gameboard/GameBoard";
 
@@ -8,7 +7,6 @@ class App extends Component {
     return (
       <div>
         <h1 className="center-text">Tic Tac Toe</h1>
-        <h2 className="center-text">Single Player vs Computer</h2>
         <GameBoard />
       </div>
     );

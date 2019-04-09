@@ -1,19 +1,18 @@
 import React, { Component } from "react";
-import "./GameBoard.css";
-import Minimax, { Winning } from "./minimax";
-import Box from "./box/Box";
-import UndoRedo from "../../containers/UndoRedo";
-import { play, loadBoard, clearBoard, endGame } from "../../actions";
 import { connect } from "react-redux";
+
+import { clearBoard, play, loadBoard } from "../../actions";
+import UndoRedo from "../../containers/UndoRedo";
+import Box from "./box/Box";
+import "./GameBoard.css";
+import Minimax from "./minimax";
 
 class GameBoard extends Component {
   state = {
-    isAITurn: false,
     player: {
       ai: "X",
       human: "O"
-    },
-    winner: ""
+    }
   };
 
   handleRestartGame = () => {
@@ -21,71 +20,60 @@ class GameBoard extends Component {
   };
 
   checkIfMoveIsTaken = index => {
-    const {
-      board: { board }
-    } = this.props;
+    const { board } = this.props.game;
 
     //Check current index on the board, if its not a number then I need to lock the box, otherwise Its a free move.
-    var isMoveTaken = isNaN(board[index]) ? true : false;
-
-    return isMoveTaken;
+    return isNaN(board[index]) ? true : false;
   };
 
   handleClick = index => {
-    if (!this.checkIfMoveIsTaken(index)) {
-      this.props.dispatch(play(index, this.state.player.human));
-      this.setState({ isAITurn: true });
+    const { isGameOver } = this.props.game;
+
+    if (!isGameOver && !this.checkIfMoveIsTaken(index)) {
+      //Human Turn
+      this.handleHumanTurn(index);
     }
   };
 
+  handleHumanTurn(index) {
+    const { human } = this.state.player;
+
+    this.props.dispatch(play(index, human));
+  }
+
   handleAITurn = () => {
-    const {
-      board: { board }
-    } = this.props;
+    const { board } = this.props.game;
+    const { ai } = this.state.player;
 
-    // AI Turn
-    var computed = Minimax(board, this.state.player.ai);
-
-    this.props.dispatch(play(computed.index, this.state.player.ai));
-
-    this.setState({ isAITurn: false });
+    setTimeout(() => {
+      // AI Turn
+      var computed = Minimax(board, ai);
+      this.props.dispatch(play(computed.index, ai));
+    }, 300);
   };
 
   componentDidMount() {
     this.props.dispatch(loadBoard(Array.from(Array(9).keys())));
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    //this.checkWinLose();
+  componentDidUpdate() {
+    const { ai } = this.state.player;
+    const { active, isGameOver, winner } = this.props.game;
+
+    if (isGameOver) {
+      return alert(`Congratulations Player ${winner}`);
+    }
+
+    if (!isGameOver) {
+      if (active === ai) {
+        //AI Turn
+        this.handleAITurn();
+      }
+    }
   }
 
-  checkWinLose = () => {
-    const {
-      board: { board }
-    } = this.props;
-    const { player } = this.state;
-
-    if (!board) return null;
-
-    if (Winning(board, player.ai)) {
-      //this.props.dispatch(endGame(player.ai));
-
-      alert("you lose");
-    } else if (Winning(board, player.human)) {
-      //this.props.dispatch(endGame(player.human));
-
-      alert("you win");
-    }
-    //  else if (board.length > 8) {
-    //   alert("tie");
-    // }
-  };
-
   shouldDraw = index => {
-    const {
-      board: { board }
-    } = this.props;
-    const { winner } = this.state.winner;
+    const { board, winner } = this.props.game;
 
     if (!winner) return null;
 
@@ -93,16 +81,7 @@ class GameBoard extends Component {
   };
 
   renderBoxes = () => {
-    const {
-      board: { board }
-    } = this.props;
-    const { isAITurn } = this.state;
-
-    if (isAITurn) this.handleAITurn();
-
-    if (!board) return null;
-
-    this.checkWinLose();
+    const { board } = this.props.game;
 
     return board.map((value, index) => {
       return (
@@ -117,13 +96,11 @@ class GameBoard extends Component {
     });
   };
 
-  // renderScore = () => (
-  //   <ul>
-  //     <li>{this.props.score ? this.props.score : "0"}</li>
-  //   </ul>
-  // );
-
   render() {
+    const { board } = this.props.game;
+
+    if (!board) return null;
+
     return (
       <div>
         <div className="align-center">
@@ -136,10 +113,7 @@ class GameBoard extends Component {
 }
 
 const mapStateToProps = state => ({
-  past: state.board.past,
-  board: state.board.present,
-  score: state.score,
-  winner: state.winner
+  game: state.game.present
 });
 
 export default connect(mapStateToProps)(GameBoard);

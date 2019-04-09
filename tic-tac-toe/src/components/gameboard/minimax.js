@@ -47,12 +47,14 @@ const Minimax = (newBoard, player) => {
     // set the empty spot to the current player
     newBoard[availableSpots[i]] = player;
 
+    var result;
+
     //if collect the score resulted from calling minimax on the opponent of the current player
-    if (player == aiPlayer) {
-      var result = Minimax(newBoard, humanPlayer);
+    if (player === aiPlayer) {
+      result = Minimax(newBoard, humanPlayer);
       move.score = result.score;
     } else {
-      var result = Minimax(newBoard, aiPlayer);
+      result = Minimax(newBoard, aiPlayer);
       move.score = result.score;
     }
 

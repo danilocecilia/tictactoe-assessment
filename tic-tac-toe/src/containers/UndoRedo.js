@@ -4,25 +4,25 @@ import { connect } from "react-redux";
 
 let UndoRedo = ({ canUndo, canRedo, onUndo, onRedo, onRestart }) => (
   <React.Fragment>
-    <button className="back" onClick={onUndo} disabled={!canUndo}>
+    {/* <button className="back" onClick={onUndo} disabled={!canUndo}>
       Undo
-    </button>
+    </button> */}
     <button className="site" onClick={onRestart}>
       Restart Game
     </button>
-    <button
+    {/* <button
       className={!canRedo ? "button-disabled" : "button"}
       onClick={onRedo}
       disabled={!canRedo}
     >
       Redo
-    </button>
+    </button> */}
   </React.Fragment>
 );
 
 const mapsStateToProps = state => ({
-  canUndo: state.board.past.length > 1,
-  canRedo: state.board.future.length > 0
+  canUndo: state.game.past.length > 1,
+  canRedo: state.game.future.length > 0
 });
 
 const mapDispatchToProps = {
