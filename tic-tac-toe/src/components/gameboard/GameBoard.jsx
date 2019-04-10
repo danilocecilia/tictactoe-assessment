@@ -16,7 +16,7 @@ class GameBoard extends Component {
   };
 
   handleRestartGame = () => {
-    this.props.dispatch(clearBoard(Array.from(Array(9).keys())));
+    this.props.clearBoard();
   };
 
   checkIfMoveIsTaken = index => {
@@ -38,22 +38,24 @@ class GameBoard extends Component {
   handleHumanTurn(index) {
     const { human } = this.state.player;
 
-    this.props.dispatch(play(index, human));
+    this.props.play(index, human);
   }
 
   handleAITurn = () => {
     const { board } = this.props.game;
+    const { play } = this.props;
     const { ai } = this.state.player;
 
     setTimeout(() => {
       // AI Turn
       var computed = Minimax(board, ai);
-      this.props.dispatch(play(computed.index, ai));
+
+      play(computed.index, ai);
     }, 300);
   };
 
   componentDidMount() {
-    this.props.dispatch(loadBoard(Array.from(Array(9).keys())));
+    this.props.loadBoard();
   }
 
   componentDidUpdate() {
@@ -87,7 +89,7 @@ class GameBoard extends Component {
       return (
         <Box
           key={index}
-          value={value}
+          marker={value}
           disabled={this.checkIfMoveIsTaken(index)}
           onClick={() => this.handleClick(index)}
           draw={this.shouldDraw(index)}
@@ -116,4 +118,13 @@ const mapStateToProps = state => ({
   game: state.game.present
 });
 
-export default connect(mapStateToProps)(GameBoard);
+const mapDispatchToProps = {
+  clearBoard,
+  play,
+  loadBoard
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GameBoard);

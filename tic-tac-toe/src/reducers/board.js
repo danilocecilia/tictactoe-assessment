@@ -1,6 +1,10 @@
 import undoable from "redux-undo";
 import { Winning } from "../components/gameboard/minimax";
 
+const InitialState = {
+  board: Array.from(Array(9).keys())
+};
+
 const move = (state, action) => {
   switch (action.type) {
     case "ADD_MOVE":
@@ -21,10 +25,10 @@ const isGameOver = (state, action) => {
   return Winning(state, action);
 };
 
-const boardGame = (state = [], action) => {
+const boardGame = (state = InitialState, action) => {
   switch (action.type) {
     case "LOAD_BOARD":
-      const board = action.board;
+      const board = state.board;
       return { ...state, board: board };
     case "ADD_MOVE":
       const newBoard = move(state.board, action);
@@ -38,7 +42,7 @@ const boardGame = (state = [], action) => {
         winner: _isGameOver ? action.player : ""
       };
     case "CLEAR_BOARD":
-      return { board: action.board };
+      return { board: InitialState.board };
     default:
       return state;
   }
