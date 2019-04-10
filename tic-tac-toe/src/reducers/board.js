@@ -1,5 +1,5 @@
 import undoable from "redux-undo";
-import { Winning } from "../components/gameboard/minimax";
+import { winning, getWinningLine } from "../components/gameboard/minimax";
 
 const InitialState = {
   board: Array.from(Array(9).keys())
@@ -22,7 +22,7 @@ const move = (state, action) => {
 };
 
 const isGameOver = (state, action) => {
-  return Winning(state, action);
+  return winning(state, action);
 };
 
 const boardGame = (state = InitialState, action) => {
@@ -39,7 +39,8 @@ const boardGame = (state = InitialState, action) => {
         board: newBoard,
         active: action.player === "X" ? "O" : "X",
         isGameOver: _isGameOver,
-        winner: _isGameOver ? action.player : ""
+        winner: _isGameOver ? action.player : "",
+        lineWinner: getWinningLine(newBoard, action.player)
       };
     case "CLEAR_BOARD":
       return { board: InitialState.board };

@@ -8,12 +8,15 @@ import "./GameBoard.css";
 import Minimax from "./minimax";
 
 class GameBoard extends Component {
-  state = {
-    player: {
-      ai: "X",
-      human: "O"
-    }
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      player: {
+        ai: "X",
+        human: "O"
+      }
+    };
+  }
 
   handleRestartGame = () => {
     this.props.clearBoard();
@@ -63,7 +66,7 @@ class GameBoard extends Component {
     const { active, isGameOver, winner } = this.props.game;
 
     if (isGameOver) {
-      return alert(`Congratulations Player ${winner}`);
+      alert(`Congratulations Player ${winner}`);
     }
 
     if (!isGameOver) {
@@ -75,11 +78,13 @@ class GameBoard extends Component {
   }
 
   shouldDraw = index => {
-    const { board, winner } = this.props.game;
+    const { winner, lineWinner } = this.props.game;
 
     if (!winner) return null;
+    debugger;
+    return lineWinner[index] === winner ? true : false;
 
-    return board[index] === winner ? true : false;
+    //return board[index] === winner ? true : false;
   };
 
   renderBoxes = () => {

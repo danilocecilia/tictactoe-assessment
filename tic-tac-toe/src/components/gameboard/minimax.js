@@ -3,7 +3,71 @@ var humanPlayer = "O";
 // ai
 var aiPlayer = "X";
 
-export const Winning = (board, player) => {
+export const getWinningLine = (board, player) => {
+  if (board[0] === player && board[1] === player && board[2] === player) {
+    return Array.from(Array(9), (x, index) =>
+      index === 0 ? player : index === 1 ? player : index === 2 ? player : 0
+    );
+  } else if (
+    board[3] === player &&
+    board[4] === player &&
+    board[5] === player
+  ) {
+    return Array.from(Array(9), (x, index) =>
+      index === 3 ? player : index === 4 ? player : index === 5 ? player : null
+    );
+  } else if (
+    board[6] === player &&
+    board[7] === player &&
+    board[8] === player
+  ) {
+    return Array.from(Array(9), (x, index) =>
+      index === 6 ? player : index === 7 ? player : index === 8 ? player : null
+    );
+  } else if (
+    board[0] === player &&
+    board[3] === player &&
+    board[6] === player
+  ) {
+    return Array.from(Array(9), (x, index) =>
+      index === 0 ? player : index === 3 ? player : index === 6 ? player : null
+    );
+  } else if (
+    board[1] === player &&
+    board[4] === player &&
+    board[7] === player
+  ) {
+    return Array.from(Array(9), (x, index) =>
+      index === 1 ? player : index === 4 ? player : index === 7 ? player : null
+    );
+  } else if (
+    board[2] === player &&
+    board[5] === player &&
+    board[8] === player
+  ) {
+    return Array.from(Array(9), (x, index) =>
+      index === 2 ? player : index === 5 ? player : index === 8 ? player : null
+    );
+  } else if (
+    board[0] === player &&
+    board[4] === player &&
+    board[8] === player
+  ) {
+    return Array.from(Array(9), (x, index) =>
+      index === 0 ? player : index === 4 ? player : index === 8 ? player : null
+    );
+  } else if (
+    board[2] === player &&
+    board[4] === player &&
+    board[6] === player
+  ) {
+    return Array.from(Array(9), (x, index) =>
+      index === 2 ? player : index === 4 ? player : index === 6 ? player : null
+    );
+  }
+};
+
+export const winning = (board, player) => {
   if (
     (board[0] === player && board[1] === player && board[2] === player) ||
     (board[3] === player && board[4] === player && board[5] === player) ||
@@ -27,9 +91,9 @@ export const EmptyIndexes = board => {
 const Minimax = (newBoard, player) => {
   var availableSpots = EmptyIndexes(newBoard);
 
-  if (Winning(newBoard, humanPlayer)) {
+  if (winning(newBoard, humanPlayer)) {
     return { score: -10 };
-  } else if (Winning(newBoard, aiPlayer)) {
+  } else if (winning(newBoard, aiPlayer)) {
     return { score: 10 };
   } else if (availableSpots.length === 0) {
     return { score: 0 };
