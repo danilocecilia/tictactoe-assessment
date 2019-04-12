@@ -77,14 +77,12 @@ class GameBoard extends Component {
     }
   }
 
-  shouldDraw = index => {
+  drawLine = index => {
     const { winner, lineWinner } = this.props.game;
 
     if (!winner) return null;
-    debugger;
-    return lineWinner[index] === winner ? true : false;
 
-    //return board[index] === winner ? true : false;
+    return lineWinner[index] === winner ? true : false;
   };
 
   renderBoxes = () => {
@@ -97,7 +95,7 @@ class GameBoard extends Component {
           marker={value}
           disabled={this.checkIfMoveIsTaken(index)}
           onClick={() => this.handleClick(index)}
-          draw={this.shouldDraw(index)}
+          draw={this.drawLine(index)}
         />
       );
     });
